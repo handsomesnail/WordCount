@@ -1,3 +1,5 @@
 /.vs
 /WordCount/bin
 /WordCount/obj
+/UnitTest/bin
+/UnitTest/obj

@@ -26,9 +26,9 @@ namespace WordCount {
         }
         
         /// <summary>入口测试函数</summary>
-        private static void Entrance(string[] args) {
-            if (args.Length == 0)
-                return;
+        public static int Entrance(string[] args) {
+            if (args.Length == 0||args==null)
+                return -1;
             List<string> options = new List<string>();//-c -w -l选项
             string sourceFile = null; //源文件名
             string outputFile = "result.txt"; //输出文件名
@@ -50,7 +50,7 @@ namespace WordCount {
                     else if (s == "-c" || s == "-w" || s == "-l") {
                         if (options.Contains(s)) {
                             LogArgumentError(0x0001);
-                            return;
+                            return 0x0001;
                         }
                         options.Add(s);
                         status = ArgsStatus.NomalOption;
@@ -61,7 +61,7 @@ namespace WordCount {
                     }
                     else {
                         LogArgumentError(0x0002);
-                        return;
+                        return 0x0002;
                     }
                 }
                 else if(status == ArgsStatus.OutputOption) {
@@ -70,7 +70,7 @@ namespace WordCount {
                     }
                     else {
                         LogArgumentError(0x0003);
-                        return;
+                        return 0x0003;
                     }
                 }
                 else if (status == ArgsStatus.OutputFile) {
@@ -79,14 +79,14 @@ namespace WordCount {
                 }
                 else if(status == ArgsStatus.Finish) {
                     LogArgumentError(0x0004);
-                    return;
+                    return 0x0004;
                 }
             }
 
             //最终必须停留在这两个状态
             if (status != ArgsStatus.OutputOption && status != ArgsStatus.Finish) {
                 LogArgumentError(0x0005);
-                return;
+                return 0x0005;
             }
 
             try {
@@ -97,7 +97,7 @@ namespace WordCount {
             }
             catch (IOException) {
                 Console.WriteLine(sourceFile+"不存在");
-                return;
+                return 0x0006;
             }
 
             int c_result = -1;
@@ -118,7 +118,7 @@ namespace WordCount {
                 Console.WriteLine(sourceFile + ", " + "字符数: " + c_result);
             if (w_result != -1)
                 Console.WriteLine(sourceFile + ", " + "单词数: " + w_result);
-            if (w_result != -1)
+            if (l_result != -1)
                 Console.WriteLine(sourceFile + ", " + "行数: " + l_result);
 
             if (isOutput) {
@@ -127,11 +127,13 @@ namespace WordCount {
                     content += (sourceFile + ", " + "字符数: " + c_result + "\r\n");
                 if (w_result != -1)
                     content += (sourceFile + ", " + "单词数: " + w_result + "\r\n");
-                if (w_result != -1)
+                if (l_result != -1)
                     content += (sourceFile + ", " + "行数: " + l_result + "\r\n");
                 Write(outputFile, content);
                 //Console.WriteLine("输出到文件" + outputFile + "成功");
             }
+
+            return 0;
 
         }
 
