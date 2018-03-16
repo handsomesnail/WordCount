@@ -21,7 +21,7 @@ namespace WordCount {
     public class Program {
         public static void Main(string[] args) {
             Entrance(args);
-            //Entrance(new string[] { "-c","-l","-w", "a.txt" });
+            //Entrance(new string[] { "-x" });
             //Console.ReadKey();
         }
         
@@ -33,11 +33,21 @@ namespace WordCount {
             string sourceFile = null; //源文件名
             string outputFile = "result.txt"; //输出文件名
             string source = null; //源文件字符串
+            bool isOutput = true;//是否输出到文件
+            bool isSelectFile = false;//-x选项选择文件
             ArgsStatus status = ArgsStatus.Uninitialized;
             //遍历参数
             foreach(var s in args) {
                 if (status== ArgsStatus.Uninitialized||status==ArgsStatus.NomalOption) {
-                    if (s == "-c" || s == "-w" || s == "-l") {
+                    if(status== ArgsStatus.Uninitialized && s == "-x") {
+                        status = ArgsStatus.Finish;
+                        options.Add("-c");
+                        options.Add("-w");
+                        options.Add("-l");
+                        isOutput = false;
+                        isSelectFile = true;
+                    }
+                    else if (s == "-c" || s == "-w" || s == "-l") {
                         if (options.Contains(s)) {
                             LogArgumentError(0x0001);
                             return;
@@ -80,7 +90,10 @@ namespace WordCount {
             }
 
             try {
-                source = Read(sourceFile);
+                if (!isSelectFile) {
+                    source = Read(sourceFile);
+                }
+                else source = Read(out sourceFile);
             }
             catch (IOException) {
                 Console.WriteLine(sourceFile+"不存在");
@@ -108,16 +121,40 @@ namespace WordCount {
             if (w_result != -1)
                 Console.WriteLine(sourceFile + ", " + "行数: " + l_result);
 
-            string content = "";
-            if (c_result != -1)
-                content += (sourceFile + ", " + "字符数: " + c_result + "\r\n");
-            if (w_result != -1)
-                content += (sourceFile + ", " + "单词数: " + w_result + "\r\n");
-            if (w_result != -1)
-                content += (sourceFile + ", " + "行数: " + l_result + "\r\n");
-            Write(outputFile, content);
-            //Console.WriteLine("输出到文件" + outputFile + "成功");
+            if (isOutput) {
+                string content = "";
+                if (c_result != -1)
+                    content += (sourceFile + ", " + "字符数: " + c_result + "\r\n");
+                if (w_result != -1)
+                    content += (sourceFile + ", " + "单词数: " + w_result + "\r\n");
+                if (w_result != -1)
+                    content += (sourceFile + ", " + "行数: " + l_result + "\r\n");
+                Write(outputFile, content);
+                //Console.WriteLine("输出到文件" + outputFile + "成功");
+            }
 
+        }
+
+        /// <summary>通过图形界面读取文件 </summary>
+        public static string Read(out string fileName) {
+            OpenFileName ofn = new OpenFileName();
+            ofn.structSize = Marshal.SizeOf(ofn);
+            //ofn.filter = "jpg文件(*.jpg)\0*.jpg\0png文件(*.png)\0*.png\0";
+            ofn.file = new string(new char[256]);
+            ofn.maxFile = ofn.file.Length;
+            ofn.fileTitle = new string(new char[64]);
+            ofn.maxFileTitle = ofn.fileTitle.Length;
+            ofn.title = "选择文件";
+            ofn.flags = 0x00080000 | 0x00001000 | 0x00000800 | 0x00000200 | 0x00000008;
+            if (LocalDialog.GetOpenFileName(ofn)) {
+                fileName = ofn.fileTitle;
+                using (FileStream fs = new FileStream(ofn.file, FileMode.Open, FileAccess.Read)) {
+                    using (StreamReader sw = new StreamReader(fs, Encoding.UTF8)) {
+                        return sw.ReadToEnd();
+                    }
+                }
+            }
+            throw new System.Exception("用户没有选择图片");
         }
 
         /// <summary>在相对路径下根据指定文件名读取 </summary>
