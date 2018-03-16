@@ -99,6 +99,9 @@ namespace WordCount {
                 Console.WriteLine(sourceFile+"不存在");
                 return 0x0006;
             }
+            catch (Exception) {
+                return 0;
+            }
 
             int c_result = -1;
             int w_result = -1;
@@ -141,7 +144,6 @@ namespace WordCount {
         public static string Read(out string fileName) {
             OpenFileName ofn = new OpenFileName();
             ofn.structSize = Marshal.SizeOf(ofn);
-            //ofn.filter = "jpg文件(*.jpg)\0*.jpg\0png文件(*.png)\0*.png\0";
             ofn.file = new string(new char[256]);
             ofn.maxFile = ofn.file.Length;
             ofn.fileTitle = new string(new char[64]);
@@ -156,7 +158,7 @@ namespace WordCount {
                     }
                 }
             }
-            throw new System.Exception("用户没有选择图片");
+            throw new System.Exception("用户没有选择文件");
         }
 
         /// <summary>在相对路径下根据指定文件名读取 </summary>
@@ -216,6 +218,5 @@ namespace WordCount {
             return count;
         }
     }
-
    
 }
