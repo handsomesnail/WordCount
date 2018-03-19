@@ -27,7 +27,7 @@ namespace UnitTest {
         [TestMethod]
         public void TestMethod4() {
             string[] input = new string[] { "-c", "input.txt", "-a" };
-            Assert.AreEqual(Program.Entrance(input), 3);
+            Assert.AreEqual(Program.Entrance(input), 7);
         }
 
         [TestMethod]
@@ -62,10 +62,21 @@ namespace UnitTest {
 
         [TestMethod]
         public void TestMethod10() {
-            string[] input = new string[] {  "-x" };
+            string[] input = new string[] { "-l", "-w", "-c", "-a", "input.txt", "-e", "stopList.txt", "-o", "output.txt" };
             Assert.AreEqual(Program.Entrance(input), 0);
         }
 
+        [TestMethod]
+        public void TestMethod11() {
+            string[] input = new string[] { "-l", "-w", "-c", "-a", "-s", "*.txt", "-e", "stopList.txt" };
+            Assert.AreEqual(Program.Entrance(input), 0);
+        }
+
+        [TestMethod]
+        public void TestMethod12() {
+            string[] input = new string[] { "-x" };
+            Assert.AreEqual(Program.Entrance(input), 0);
+        }
 
     }
 }

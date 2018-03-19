@@ -3,6 +3,7 @@
 运行时环境: .Net Framework 4.6(兼容3.5)
 
 支持基本功能 -c -w -l -o 
+支持扩展功能 -s -a -e
 支持高级功能 -x
 
 C#工程:/WordCount
