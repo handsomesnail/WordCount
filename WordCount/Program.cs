@@ -27,13 +27,13 @@ namespace WordCount {
         private static HashSet<char> splitCharDic = new HashSet<char> { ' ', '\n', '\0', '\r', ','};
 
         public static void Main(string[] args) {
-            //int code = Entrance(args);
-            int code = Entrance(new string[] { "-x" });
+            int code = Entrance(args);
+            //int code = Entrance(new string[] { "-x" });
             //int code = Entrance(new string[] { "-a", "-w", "-l", "-c", "a.txt", "-e", "stopList.txt" });
             if (code != 0) {
                 Console.WriteLine("参数格式不正确" + " Code:" + code);
             }
-            Console.ReadKey();
+            //Console.ReadKey();
         }
         
         /// <summary>入口测试函数</summary>
@@ -254,7 +254,7 @@ namespace WordCount {
         private static int CountWord(string s) {
             return CountWord(s, new HashSet<string>());
         }
-
+        /// <summary>根据停用词表统计单词数并打印</summary>
         private static int CountWord(string s,HashSet<string> stopList) {
             if (s.Length == 0)
                 return 0;
@@ -310,15 +310,12 @@ namespace WordCount {
             codeLineCount = 0;//代码行
             emptyLineCount = 0;//空行
             commentLineCount = 0;//注释行
-
             int charInALine = 0; //当前行可见字符数
             int i = -1;
             CommentLineType CommentLine = CommentLineType.NonCommentLine;
             bool cancelCommentLine = false;
             foreach (char c in s) {
-
                 i++;
-
                 if (c == '\n'||i==s.Length-1) {
                     if (CommentLine==CommentLineType.SingleCommentLine) {
                         commentLineCount++;
@@ -331,14 +328,11 @@ namespace WordCount {
                         codeLineCount++;
                     }
                     else emptyLineCount++;
-
                     if (cancelCommentLine) {
                         cancelCommentLine = false;
                     }
-
                     charInALine = 0;
                 }
-
                 if (charInALine <= 1 && c == '/' && i > 0 && s[i - 1] == '/') {
                     CommentLine = CommentLineType.SingleCommentLine;
                 }
@@ -353,7 +347,6 @@ namespace WordCount {
                     charInALine++;
                 }
             }
-
         }
 
 
